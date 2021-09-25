@@ -1,0 +1,140 @@
+
+
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <fstream>
+using namespace std;
+
+
+int main()
+{
+    int userChips = 0;
+    string userName;
+    fstream myfile;
+    myfile.open("saves.txt");
+    cout << "What is your Username? \n";
+    cin >> userName;
+    if (userName.find(userName) != userName) {
+        getline(cin, userName);
+        myfile << userName << endl;
+        myfile.close();
+        cout << "New User Found. Giving 100 Chips." << endl;
+        userChips += 100;
+    }
+    else if (userName.find(userName) == string::npos) {
+        cout << "User Found: " << userName << endl;
+
+    }
+
+    // work on a split cards
+MAIN:
+    int bet = 0;
+    bool check = 0;
+    do {
+        cout << "Current Chips: " << userChips << endl;
+        cout << "Bet Amount? : ";
+        cin >> bet;
+        if (!(cin >> bet)) {
+            cin.ignore(10000, '\n');
+            cin.clear();
+        }
+        if (bet < 0) { cout << "//Invalid Number Try Again//" << endl; }
+        else if (bet > userChips) {
+            cout << "Not enough chips!" << endl;
+        }
+        else if (bet > 0 && bet <= userChips) {
+            userChips = userChips - bet;
+            cout << "A bet of :|" << bet << "| was placed, remaining chips are: |" << userChips << "|" << endl;
+            check = 1;
+        }
+        else {
+            cout << "Invalid Response Try Again" << endl;
+            cin.ignore(10000, '\n');
+            cin.clear();
+        }
+    } while (check == 0);
+    int total;
+    int userNum=0;
+    int input;
+    cout << "!Welcome to black jack get ready for the cards!" << endl;
+    int array[21] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+    srand((unsigned) time(0));
+    array[0] = rand() % 10 + 1;
+    array[1] = rand() % 10 + 1;
+    int dealercard1 = rand() % 10 + 1;
+    int dealercard2 = rand() % 10 + 1;
+    cout << "->Dealer is showing a: " << dealercard1 << " & " << dealercard2 <<endl;
+    cout << "->Your cards are: " << array[0] << " & " << array[1] << endl;
+    do {
+        int total = 0;
+        int n = 20;
+        for (int i = 0; i < n; ++i)
+        {
+            total += array[i];
+        }
+        if (total > 21) {
+            cout << "You Busted!" << endl;
+            cout << "======================" << endl;
+            cout << "======================" << endl;
+            goto MAIN;
+        }
+        cout << "DEALER: " << dealercard1 + dealercard2 << " USER: " << total <<endl;
+        cout << "Would you like to..." << endl;
+        cout << "1.Hit  or   2.Stay" << endl;
+        cin >> input;
+        switch (input) {
+        case 1:
+        {
+            for (int i = 0; i < 22; ++i)
+            {
+                if (array[i] == 0)
+                {
+                    array[i] = rand() % 10 + 1;
+                    cout << "New Card is: " << array[i] << endl;
+                    i = 30;
+                } 
+                else ++i;
+            }
+            break;
+        }
+        case 2:
+        {
+            int dealerTotal = dealercard1 + dealercard2;
+            int card=0;
+            do {  
+              
+                if (dealerTotal < 17) {
+                    card = rand() % 10 + 1;
+                    cout << "Dealer draws a: " << card << endl;
+                    dealerTotal += card;
+                }
+            } while (dealerTotal < 17);
+            cout << "Dealer: " << dealerTotal << " " << "User: " << total << endl;
+            if (dealerTotal > 21) {
+                cout << "Dealer Busted. You win!" << endl;
+                userChips = userChips + (2 * bet);
+            }
+            else if (dealerTotal > total) {
+                cout << "Game Over. You lose" << endl;
+                userChips = userChips - bet;
+            }
+            else if (dealerTotal == total) {
+                cout << "Game Over. You tie" << endl;
+                userChips = userChips;
+            }
+            else {
+                cout << "Game Over. You win!" << endl;
+                userChips = userChips + (2 * bet);
+            }
+            break;
+        }
+        }
+    } while (input != 2);
+    cout << "=======================================" << endl;
+    cout << "=======================================" << endl;
+    goto MAIN;
+}
+
+
